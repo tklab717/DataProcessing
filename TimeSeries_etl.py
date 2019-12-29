@@ -35,3 +35,23 @@ def detect_down(df, signal_name, criteria):
     down_time = list(df.loc[df[signal_name + '_point']].index.values)
     return down_time
 
+def ave_move(df, dt, sampling, signal_name):
+    """
+    This function add moving average of selecting signal to dataframe.
+    
+    Args:
+        df : dataframe which include time series data that\
+        includes signal gives moving average process
+        dt : moving average period
+        sampling : sampling time of signal that is index
+        signal_name: The name of signal which is processed by moving average 
+    
+    Returns:
+        df: dataframe include moving average signal
+    """
+    
+    
+    n = int(dt / sampling)
+    #df['F_CH_rise'] = df.F_CH.diff()==1
+    df[signal_name + '_mean'] = df[signal_name].rolling(n, center = True).mean()
+    return df
