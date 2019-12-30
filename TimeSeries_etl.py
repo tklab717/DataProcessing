@@ -49,9 +49,25 @@ def ave_move(df, dt, sampling, signal_name):
     Returns:
         df: dataframe include moving average signal
     """
-    
-    
     n = int(dt / sampling)
     #df['F_CH_rise'] = df.F_CH.diff()==1
     df[signal_name + '_mean'] = df[signal_name].rolling(n, center = True).mean()
     return df
+
+def window_data(df, w_t, F_CH_point):
+    """
+    This function return extracting dataframe.
+    
+    Args:
+        df : dataframe which include time series data
+        w_t: window for extracting data 
+        F_CH_point : The mid point of extracting data
+    
+    Returns:
+        df_W : dataframe which is extracted
+    """   
+    
+    t_point = df[df[F_CH_point]].index.values[0]
+    df_W = df[df.index.map(lambda x: True if (x < t_point + w_t) & (x > t_point - w_t) else False )].copy()
+    df_W.index = np.arange(0, len(df_W))/100
+    return df_W
