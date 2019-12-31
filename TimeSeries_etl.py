@@ -71,3 +71,31 @@ def window_data(df, w_t, F_CH_point):
     df_W = df[df.index.map(lambda x: True if (x < t_point + w_t) & (x > t_point - w_t) else False )].copy()
     df_W.index = np.arange(0, len(df_W))/100
     return df_W
+
+def get_d_signal(df, dt, sampling, signal_name):
+    """
+    This fucntion return dataset that includes signal features.
+    The features are maximum width of singnal
+    
+    Args:
+        df : dataframe which include time series index and signal which you want to get features
+        dt: window size in which maximum width of signal is calculated
+        sampling: sampling time
+        signal_name: the name of the signal which is extracted signal features
+    
+    Returns:
+        dict_set:extracted signal features(dmax, mintime_value, maxtime_value, mintime, maxtime)
+    """   
+    n = int(dt / sampling)
+    df[signal_name + '_max'] =df[signal_name].rolling(n, center=True).max()
+    df[signal_name + '_min'] = df[signal_name ].rolling(n, center= True).min()
+    df[signal_name + '_delta'] = df[signal_name + '_max'] - df[signal_name + '_min']
+    signal_dmax = np.nanmax(df[signal_name + '_delta'])
+    df['F_' + signal_name + '_max_d'] =df[signal_name + '_delta'] .map(lambda x : 1 if x == signal_dmax else 0)
+    pos_mm = df[df['F_' + signal_name + '_max_d'].diff().map(lambda x: abs(x)) == 1].index.values
+    min_t = round(pos_mm[1] - dt/2 - sampling , 2)
+    max_t = round(pos_mm[0] + dt/2- sampling , 2)
+    min_value = df[df.index == min_t][signal_name].values[0]
+    max_value = df[df.index == max_t][signal_name].values[0]
+    dict_set = {"dmax":signal_dmax, "mintime_value":min_value, "maxtime_value":max_value,"mintime":min_t, "maxtime":max_t}
+    return dict_set
