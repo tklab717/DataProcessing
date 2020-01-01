@@ -95,7 +95,7 @@ def get_d_signal(df, dt, sampling, signal_name):
     pos_mm = df[df['F_' + signal_name + '_max_d'].diff().map(lambda x: abs(x)) == 1].index.values
     min_t = round(pos_mm[1] - dt/2 - sampling , 2)
     max_t = round(pos_mm[0] + dt/2- sampling , 2)
-    min_value = df[df.index == min_t][signal_name].values[0]
-    max_value = df[df.index == max_t][signal_name].values[0]
+    min_value = df[df.index.values == min_t][signal_name].values[0]
+    max_value = df[df.index.values  == max_t][signal_name].values[0]
     dict_set = {"dmax":signal_dmax, "mintime_value":min_value, "maxtime_value":max_value,"mintime":min_t, "maxtime":max_t}
     return dict_set
