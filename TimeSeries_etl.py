@@ -99,3 +99,40 @@ def get_d_signal(df, dt, sampling, signal_name):
     max_value = df[df.index.values.round(3)  == max_t][signal_name].values[0]
     dict_set = {"dmax":signal_dmax, "mintime_value":min_value, "maxtime_value":max_value,"mintime":min_t, "maxtime":max_t}
     return dict_set
+
+def plot_signal(df_W, features_sig, plot_sig, y1_name, y2_name, x_name):
+    """
+    This fucntion return figure that describe scatter plot that include 2 signals with max and min plot.
+    
+    Args:
+        df_W : dataframe which include time series index and two signal 
+        features_sig : dictionary that include features(dmax, mintime_value, maxtime_value, mintime, maxtime)
+        plot_sig: list that are 1st and 2nd signal.
+        y1_name: plot 1st axis name
+        y2_name: plot 2nd axis name
+        x_name:plot x axis name
+    
+    Returns:
+        fig: scatter plot
+    """   
+    
+    
+    
+    fig = df_W[[i for i in plot_sig]].plot(secondary_y=[y2_name], figsize=(7,4),legend="best",grid=True)
+    fig.scatter([features_sig['mintime'], features_sig['maxtime']],[features_sig['mintime_value'], features_sig['maxtime_value']], color = 'red')
+    # 左y軸のラベル
+    fig.set_ylabel(y1_name, fontsize=15)
+
+    # 右y軸のラベル
+    fig.right_ax.set_ylabel(y2_name, fontsize=15)
+
+    # x軸のラベル
+    fig.set_xlabel(x_name, fontsize=15)
+    
+    # 左y軸の描画範囲 余裕を持たせるために下限上限共に-1, +1
+    fig.set_ylim(-10, 10)
+
+    # 右y軸の描画範囲
+    fig.right_ax.set_ylim(0,1)
+
+    return fig
