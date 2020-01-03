@@ -115,9 +115,7 @@ def plot_signal(df_W, features_sig, plot_sig, y1_name, y2_name, x_name):
     Returns:
         fig: scatter plot
     """   
-    
-    
-    
+      
     fig = df_W[[i for i in plot_sig]].plot(secondary_y=[y2_name], figsize=(7,4),legend="best",grid=True)
     fig.scatter([features_sig['mintime'], features_sig['maxtime']],[features_sig['mintime_value'], features_sig['maxtime_value']], color = 'red')
     # 左y軸のラベル
@@ -129,8 +127,8 @@ def plot_signal(df_W, features_sig, plot_sig, y1_name, y2_name, x_name):
     # x軸のラベル
     fig.set_xlabel(x_name, fontsize=15)
     
-    # 左y軸の描画範囲 余裕を持たせるために下限上限共に-1, +1
-    fig.set_ylim(-10, 10)
+    # 左y軸の描画範囲 Auto range 
+    fig.set_ylim(round(df_W[y1_name].min()/0.3,0), round(df_W[y1_name].max()/0.3,0))
 
     # 右y軸の描画範囲
     fig.right_ax.set_ylim(0,1)
